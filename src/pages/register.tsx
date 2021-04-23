@@ -6,11 +6,13 @@ import {
   Input,
   FormErrorMessage,
 } from "@chakra-ui/react";
+import { Wrapper } from "../components/Wrapper";
 
 interface registerProps {}
 
 const Register: React.FC<registerProps> = ({}) => {
   return (
+      <Wrapper variant="small">
     <Formik
       initialValues={{ username: "", password: "" }}
       onSubmit={(values) => {
@@ -32,6 +34,7 @@ const Register: React.FC<registerProps> = ({}) => {
         </Form>
       )}
     </Formik>
+    </Wrapper>
   );
 };
 
