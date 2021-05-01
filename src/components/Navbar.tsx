@@ -7,7 +7,7 @@ import { isServer } from "../../utils/isServer";
 interface NavbarProps {}
 
 export const Navbar: React.FC<NavbarProps> = ({}) => {
-  const [{fetching: logoutFetching}, logout] = useLogoutMutation();
+  const [{ fetching: logoutFetching }, logout] = useLogoutMutation();
   const [{ data, fetching }] = useMeQuery({
     pause: isServer(),
   });
@@ -33,24 +33,36 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
     // user is logged in
   } else {
     body = (
-      <Flex>
-        <Box mr={4}>{data.me.username}</Box><Button 
-        onClick={() => {
-          logout();
-        }}
-        isLoading={logoutFetching}
-        color="white" variant="link">Logout</Button>
+      <Flex align="center">
+        <NextLink href="create-post">
+          <Button as={Link} mr={4}>
+            create post
+          </Button>
+        </NextLink>
+        <Box mr={4}>{data.me.username}</Box>
+        <Button
+          onClick={() => {
+            logout();
+          }}
+          isLoading={logoutFetching}
+          color="black"
+          variant="link"
+        >
+          Logout
+        </Button>
       </Flex>
     );
   }
   return (
-    <Flex zIndex={1} position='sticky' top={0} p={4} bg="tan" align='center'>
-      <NextLink href='/'>
+    <Flex zIndex={1} position="sticky" top={0} p={4} bg="tan">
+      <Flex flex={1} m='auto' maxW={800} align='center'>
+      <NextLink href="/">
         <Link>
-        <Heading>RedditClone</Heading>
+          <Heading>RedditClone</Heading>
         </Link>
       </NextLink>
       <Box ml={"auto"}>{body}</Box>
+      </Flex>
     </Flex>
   );
 };
