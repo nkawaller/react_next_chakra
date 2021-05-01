@@ -2,19 +2,21 @@ import { withUrqlClient } from "next-urql";
 import React from "react";
 import { createUrqlClient } from "../../utils/createUrqlClient";
 import { Layout } from "../components/Layout";
-import { usePostsQuery } from "../generated/graphql";
+import { useDeletePostMutation, usePostsQuery } from "../generated/graphql";
 import NextLink from "next/link";
 import {
   Box,
   Button,
   Flex,
   Heading,
+  IconButton,
   Link,
   Stack,
   Text,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { UpvoteSection } from "../components/UpvoteSection";
+import { DeleteIcon } from "@chakra-ui/icons";
 
 const Index = () => {
   const [variables, setVariables] = useState({
@@ -24,6 +26,7 @@ const Index = () => {
   const [{ data, fetching }] = usePostsQuery({
     variables,
   });
+  const [, deletePost] = useDeletePostMutation();
 
   if (!fetching && !data) {
     return <div>query failed!</div>;
@@ -35,17 +38,29 @@ const Index = () => {
         <div>loading...</div>
       ) : (
         <Stack spacing={8}>
-          {data!.posts.posts.map((p) => (
+          {data!.posts.posts.map((p) => !p ? null : (
             <Flex key={p.id} p={5} shadow="md" borderWidth="1px">
               <UpvoteSection post={p} />
-              <Box>
+              <Box flex={1}>
                 <NextLink href="/post/[id]" as={`/post/${p.id}`}>
                   <Link>
                     <Heading fontSize="xl">{p.title}</Heading>
                   </Link>
                 </NextLink>
                 <Text>posted by {p.creator.username}</Text>
-                <Text mt={4}>{p.textSnippet}</Text>
+                <Flex align="center">
+                  <Text flex={1} mt={4}>
+                    {p.textSnippet}
+                  </Text>
+                  <IconButton
+                    aria-label="delete post"
+                    colorScheme="red"
+                    icon={<DeleteIcon />}
+                    onClick={() => {
+                      deletePost({ id: p.id });
+                    }}
+                  />
+                </Flex>
               </Box>
             </Flex>
           ))}
