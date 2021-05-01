@@ -1,5 +1,7 @@
+import { Box, Heading } from '@chakra-ui/react';
 import { withUrqlClient } from 'next-urql';
 import { useRouter } from 'next/router';
+import React from 'react';
 import { createUrqlClient } from '../../../utils/createUrqlClient';
 import { Layout } from '../../components/Layout';
 import { usePostQuery } from '../../generated/graphql';
@@ -22,9 +24,21 @@ const Post = ({}) => {
             </Layout>
         )
     }
+
+if (!data?.post) {
+    return (
+        <Layout>
+            <Box>
+                Sorry, could not find that post
+            </Box>
+        </Layout>
+    )
+}
+
         return (
             <Layout>
-                {data?.post?.text}
+                <Heading mb={4}>{data.post.title}</Heading>
+                {data.post.text}
             </Layout>
         );
 }
