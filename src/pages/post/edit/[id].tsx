@@ -1,24 +1,38 @@
-import { Box, Textarea, Button } from '@chakra-ui/react';
-import { Formik, Form } from 'formik';
-import { withUrqlClient } from 'next-urql';
-import router from 'next/router';
-import React from 'react'
-import { createUrqlClient } from '../../../../utils/createUrqlClient';
-import { InputField } from '../../../components/InputField';
-import { Layout } from '../../../components/Layout';
-import createPost from '../../create-post';
+import { Box, Button, Textarea } from "@chakra-ui/react";
+import { Form, Formik } from "formik";
+import { withUrqlClient } from "next-urql";
+import React from "react";
+import { createUrqlClient } from "../../../../utils/createUrqlClient";
+import { useGetPostFromUrl } from "../../../../utils/useGetPostFromUrl";
+import { InputField } from "../../../components/InputField";
+import { Layout } from "../../../components/Layout";
 
 export const EditPost = ({}) => {
-        return (
+  const [{ data, fetching }] = useGetPostFromUrl();
+  if (fetching) {
+    return (
+      <Layout>
+        <div>loading...</div>
+      </Layout>
+    );
+  }
 
+  if (!data?.post) {
+    return (
+      <Layout>
+        <Box>Sorry, could not find that post</Box>
+      </Layout>
+    );
+  }
+  return (
     <Layout variant="small">
       <Formik
-        initialValues={{ title: "", text: "" }}
+        initialValues={{ title: data.post.title, text: data.post.text }}
         onSubmit={async (values) => {
-        //   const { error } = await createPost({ input: values });
-        //   if (!error) {
-        //     router.push("/");
-        //   }
+          //   const { error } = await createPost({ input: values });
+          //   if (!error) {
+          //     router.push("/");
+          //   }
         }}
       >
         {({ isSubmitting }) => (
@@ -33,13 +47,13 @@ export const EditPost = ({}) => {
               isLoading={isSubmitting}
               colorScheme="teal"
             >
-              Create Post
+              Update Post
             </Button>
           </Form>
         )}
       </Formik>
     </Layout>
-        );
-}
+  );
+};
 
-export default withUrqlClient(createUrqlClient)(EditPost)
+export default withUrqlClient(createUrqlClient)(EditPost);
