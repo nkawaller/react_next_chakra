@@ -3,10 +3,9 @@ import {
   Button,
   Flex,
   Heading,
-
   Link,
   Stack,
-  Text
+  Text,
 } from "@chakra-ui/react";
 import { withUrqlClient } from "next-urql";
 import NextLink from "next/link";
@@ -15,9 +14,7 @@ import { createUrqlClient } from "../../utils/createUrqlClient";
 import { EditDeletePostButtons } from "../components/EditDeletePostButtons";
 import { Layout } from "../components/Layout";
 import { UpvoteSection } from "../components/UpvoteSection";
-import {
-  usePostsQuery
-} from "../generated/graphql";
+import { usePostsQuery } from "../generated/graphql";
 
 const Index = () => {
   const [variables, setVariables] = useState({
@@ -25,12 +22,16 @@ const Index = () => {
     cursor: null as null | string,
   });
 
-  const [{ data, fetching }] = usePostsQuery({
+  const [{ data, error, fetching }] = usePostsQuery({
     variables,
   });
 
   if (!fetching && !data) {
-    return <div>query failed!</div>;
+    return (
+    <div>
+      <div>query failed!</div><div>{error?.message}</div>
+    </div>
+    );
   }
 
   return (
@@ -54,9 +55,12 @@ const Index = () => {
                     <Text flex={1} mt={4}>
                       {p.textSnippet}
                     </Text>
-                      <Box ml="auto">
-                        <EditDeletePostButtons id={p.id} creatorId={p.creator.id}/>
-                      </Box>
+                    <Box ml="auto">
+                      <EditDeletePostButtons
+                        id={p.id}
+                        creatorId={p.creator.id}
+                      />
+                    </Box>
                   </Flex>
                 </Box>
               </Flex>
