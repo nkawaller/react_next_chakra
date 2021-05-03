@@ -1,4 +1,4 @@
-import { Box, Button, Textarea } from "@chakra-ui/react";
+import { Box, Button } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
 import { withUrqlClient } from "next-urql";
 import { useRouter } from "next/router";
@@ -47,7 +47,7 @@ export const EditPost = ({}) => {
           <Form>
             <InputField name="title" placeholder="title" label="Title" />
             <Box mt={4}>
-              <Textarea name="text" placeholder="write here..." label="Body" />
+              <InputField name="text" placeholder="write here..." label="Body" />
             </Box>
             <Button
               mt={4}
