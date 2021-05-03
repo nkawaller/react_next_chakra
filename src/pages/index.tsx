@@ -16,8 +16,6 @@ import { EditDeletePostButtons } from "../components/EditDeletePostButtons";
 import { Layout } from "../components/Layout";
 import { UpvoteSection } from "../components/UpvoteSection";
 import {
-  useDeletePostMutation,
-  useMeQuery,
   usePostsQuery
 } from "../generated/graphql";
 
@@ -27,11 +25,9 @@ const Index = () => {
     cursor: null as null | string,
   });
 
-  const [{ data: meData }] = useMeQuery();
   const [{ data, fetching }] = usePostsQuery({
     variables,
   });
-  const [, deletePost] = useDeletePostMutation();
 
   if (!fetching && !data) {
     return <div>query failed!</div>;
@@ -58,11 +54,9 @@ const Index = () => {
                     <Text flex={1} mt={4}>
                       {p.textSnippet}
                     </Text>
-                    {meData?.me?.id !== p.creator.id ? null : (
                       <Box ml="auto">
-                        <EditDeletePostButtons id={p.id}/>
+                        <EditDeletePostButtons id={p.id} creatorId={p.creator.id}/>
                       </Box>
-                    )}
                   </Flex>
                 </Box>
               </Flex>
